@@ -12,7 +12,7 @@ interface TrailPoint {
 export default function CursorTrail() {
   const [trails, setTrails] = useState<TrailPoint[]>([])
   const [isMoving, setIsMoving] = useState(false)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

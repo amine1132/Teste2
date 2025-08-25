@@ -1,12 +1,9 @@
 'use client'
 
 import { useRef, useMemo } from 'react'
-import { Canvas, useFrame, extend } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial, Float } from '@react-three/drei'
 import * as THREE from 'three'
-
-// Extension pour les shaders personnalisés
-extend({ PointMaterial })
 
 interface ParticleSystemProps {
   count?: number

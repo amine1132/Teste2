@@ -31,7 +31,6 @@ export default function RiverFallback({
   const wavePoints = useRef<WavePoint[]>([])
   
   const [currentInteractions, setCurrentInteractions] = useState(0)
-  const [isInteracting, setIsInteracting] = useState(false)
 
   // Initialiser les points de vague
   const initializeWaves = useCallback(() => {
@@ -100,20 +99,7 @@ export default function RiverFallback({
       ctx.stroke()
     })
     
-    // Effet de brillance
-    if (mouseRef.current.isPressed) {
-      const mouseGradient = ctx.createRadialGradient(
-        mouseRef.current.x, mouseRef.current.y, 0,
-        mouseRef.current.x, mouseRef.current.y, 150
-      )
-      mouseGradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)')
-      mouseGradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
-      
-      ctx.fillStyle = mouseGradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-    }
-    
-    timeRef.current += 0.02
+    timeRef.current += 0.016
   }, [intensity])
 
   // Animation
@@ -148,12 +134,10 @@ export default function RiverFallback({
     
     const handleMouseDown = () => {
       mouseRef.current.isPressed = true
-      setIsInteracting(true)
     }
     
     const handleMouseUp = () => {
       mouseRef.current.isPressed = false
-      setIsInteracting(false)
     }
     
     const handleTouchMove = (e: TouchEvent) => {
@@ -171,12 +155,10 @@ export default function RiverFallback({
     
     const handleTouchStart = () => {
       mouseRef.current.isPressed = true
-      setIsInteracting(true)
     }
     
     const handleTouchEnd = () => {
       mouseRef.current.isPressed = false
-      setIsInteracting(false)
     }
     
     window.addEventListener('mousemove', handleMouseMove)

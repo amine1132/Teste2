@@ -2,15 +2,12 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import RiverFallback from './RiverFallback'
 
 interface RealisticRiverProps {
   onInteractionProgress?: (progress: number) => void
   targetInteractions?: number
   intensity?: number
 }
-
-
 
 export default function RealisticRiver({ 
   onInteractionProgress, 
@@ -25,7 +22,6 @@ export default function RealisticRiver({
   const interactionCountRef = useRef(0)
   
   const [currentInteractions, setCurrentInteractions] = useState(0)
-  const [isInteracting, setIsInteracting] = useState(false)
   const [performanceLevel, setPerformanceLevel] = useState<'high' | 'medium' | 'low'>('high')
 
   // Détection de performance pour adapter les effets
@@ -42,8 +38,6 @@ export default function RealisticRiver({
       setPerformanceLevel('high')
     }
   }, [])
-
-
 
   // Rendu Canvas 2D ultra-immersif avec effets avancés
   const renderCanvas2D = useCallback(() => {
@@ -95,7 +89,7 @@ export default function RealisticRiver({
       { y: 0.8, amp: 6, freq: 0.01, speed: 0.5, alpha: 0.1, width: 0.8 }
     ]
     
-    waveConfigs.forEach((wave, layerIndex) => {
+    waveConfigs.forEach((wave) => {
       // Vague principale
       ctx.strokeStyle = `rgba(100, 180, 255, ${wave.alpha})`
       ctx.lineWidth = wave.width
@@ -105,16 +99,15 @@ export default function RealisticRiver({
       ctx.beginPath()
       
       for (let x = 0; x <= width; x += 1) {
-        let baseY = height * wave.y
-        let waveY = baseY + Math.sin(x * wave.freq + timeRef.current * wave.speed) * wave.amp
+        const baseY = height * wave.y
+        const waveY = baseY + Math.sin(x * wave.freq + timeRef.current * wave.speed) * wave.amp
         
         // Ajouter du bruit secondaire pour plus de réalisme
-        waveY += Math.sin(x * wave.freq * 2.3 + timeRef.current * wave.speed * 1.7) * wave.amp * 0.3
-        waveY += Math.cos(x * wave.freq * 3.1 - timeRef.current * wave.speed * 0.8) * wave.amp * 0.15
+        const waveYWithNoise = waveY + Math.sin(x * wave.freq * 2.3 + timeRef.current * wave.speed * 1.7) * wave.amp * 0.3 + Math.cos(x * wave.freq * 3.1 - timeRef.current * wave.speed * 0.8) * wave.amp * 0.15
         
         // Interaction souris ultra-réactive
         if (mouseRef.current.isPressed) {
-          const dist = Math.sqrt(Math.pow(x - mouseRef.current.x, 2) + Math.pow(waveY - mouseRef.current.y, 2))
+          const dist = Math.sqrt(Math.pow(x - mouseRef.current.x, 2) + Math.pow(waveYWithNoise - mouseRef.current.y, 2))
           const maxDist = 200 * intensity
           
           if (dist < maxDist) {
@@ -128,14 +121,26 @@ export default function RealisticRiver({
             // Effet de dispersion
             const disperseEffect = Math.cos(dist * rippleFreq * 0.7 + timeRef.current * rippleSpeed * 1.3) * influence * 15 * intensity
             
-            waveY += concentricRipple + disperseEffect
+            const finalWaveY = waveYWithNoise + concentricRipple + disperseEffect
+            
+            if (x === 0) {
+              ctx.moveTo(x, finalWaveY)
+            } else {
+              ctx.lineTo(x, finalWaveY)
+            }
+          } else {
+            if (x === 0) {
+              ctx.moveTo(x, waveYWithNoise)
+            } else {
+              ctx.lineTo(x, waveYWithNoise)
+            }
           }
-        }
-        
-        if (x === 0) {
-          ctx.moveTo(x, waveY)
         } else {
-          ctx.lineTo(x, waveY)
+          if (x === 0) {
+            ctx.moveTo(x, waveYWithNoise)
+          } else {
+            ctx.lineTo(x, waveYWithNoise)
+          }
         }
       }
       
@@ -148,8 +153,8 @@ export default function RealisticRiver({
       ctx.beginPath()
       
       for (let x = 0; x <= width; x += 2) {
-        let baseY = height * wave.y
-        let waveY = baseY - Math.sin(x * wave.freq + timeRef.current * wave.speed) * wave.amp * 0.4
+        const baseY = height * wave.y
+        const waveY = baseY - Math.sin(x * wave.freq + timeRef.current * wave.speed) * wave.amp * 0.4
         
         if (x === 0) {
           ctx.moveTo(x, waveY)
@@ -197,76 +202,13 @@ export default function RealisticRiver({
           // Gradient pour chaque particule
           const particleGradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2)
           particleGradient.addColorStop(0, `rgba(180, 220, 255, ${alpha})`)
-          particleGradient.addColorStop(0.7, `rgba(120, 180, 255, ${alpha * 0.6})`)
-          particleGradient.addColorStop(1, `rgba(80, 140, 255, 0)`)
+          particleGradient.addColorStop(1, `rgba(180, 220, 255, 0)`)
           
           ctx.fillStyle = particleGradient
-          ctx.beginPath()
-          ctx.arc(x, y, size, 0, Math.PI * 2)
-          ctx.fill()
-        }
-      }
-      
-      // Étincelles aléatoires
-      for (let i = 0; i < 12; i++) {
-        const sparkleAngle = Math.random() * Math.PI * 2
-        const sparkleRadius = 60 + Math.random() * 80
-        const x = mouseX + Math.cos(sparkleAngle) * sparkleRadius
-        const y = mouseY + Math.sin(sparkleAngle) * sparkleRadius
-        const sparkleLife = (timeRef.current * 8 + i * 0.5) % (Math.PI * 2)
-        const alpha = Math.max(0, Math.sin(sparkleLife)) * 0.8
-        
-        if (alpha > 0.1) {
-          ctx.fillStyle = `rgba(200, 240, 255, ${alpha})`
-          ctx.beginPath()
-          ctx.arc(x, y, 1 + Math.sin(sparkleLife) * 2, 0, Math.PI * 2)
-          ctx.fill()
-        }
-      }
-      
-      // Vagues de choc concentriques
-      for (let i = 1; i <= 4; i++) {
-        const shockRadius = (timeRef.current * 80 + i * 30) % 200
-        const shockAlpha = Math.max(0, 1 - shockRadius / 200) * 0.4
-        
-        if (shockAlpha > 0.05) {
-          ctx.strokeStyle = `rgba(150, 210, 255, ${shockAlpha})`
-          ctx.lineWidth = 2 * (1 - shockRadius / 200)
-          ctx.beginPath()
-          ctx.arc(mouseX, mouseY, shockRadius, 0, Math.PI * 2)
-          ctx.stroke()
+          ctx.fillRect(x - size, y - size, size * 2, size * 2)
         }
       }
     }
-    
-    // === PARTICULES FLOTTANTES AMBIENTES ===
-    
-    const floatingParticles = 15
-    for (let i = 0; i < floatingParticles; i++) {
-      const x = (width * 0.1 + (i * width * 0.8) / floatingParticles + Math.sin(timeRef.current * 0.5 + i) * 40) % width
-      const y = height * (0.3 + Math.sin(timeRef.current * 0.3 + i * 0.8) * 0.25)
-      const size = 1 + Math.sin(timeRef.current * 2 + i) * 0.5
-      const alpha = 0.3 + Math.sin(timeRef.current * 1.5 + i * 1.2) * 0.2
-      
-      ctx.fillStyle = `rgba(120, 190, 255, ${alpha})`
-      ctx.beginPath()
-      ctx.arc(x, y, size, 0, Math.PI * 2)
-      ctx.fill()
-    }
-    
-    // === REFLETS DE LUMIÈRE ANIMÉS ===
-    
-    // Reflet principal qui traverse la rivière
-    const lightX = (timeRef.current * 30) % (width + 200) - 100
-    const lightGradient = ctx.createLinearGradient(lightX - 100, 0, lightX + 100, 0)
-    lightGradient.addColorStop(0, 'rgba(180, 220, 255, 0)')
-    lightGradient.addColorStop(0.5, 'rgba(180, 220, 255, 0.2)')
-    lightGradient.addColorStop(1, 'rgba(180, 220, 255, 0)')
-    
-    ctx.globalCompositeOperation = 'screen'
-    ctx.fillStyle = lightGradient
-    ctx.fillRect(lightX - 100, height * 0.2, 200, height * 0.6)
-    ctx.globalCompositeOperation = 'source-over'
     
     timeRef.current += 0.016
   }, [intensity])
@@ -305,12 +247,10 @@ export default function RealisticRiver({
     
     const handleMouseDown = () => {
       mouseRef.current.isPressed = true
-      setIsInteracting(true)
     }
     
     const handleMouseUp = () => {
       mouseRef.current.isPressed = false
-      setIsInteracting(false)
     }
     
     // Touch events pour iPad
@@ -329,12 +269,10 @@ export default function RealisticRiver({
     
     const handleTouchStart = () => {
       mouseRef.current.isPressed = true
-      setIsInteracting(true)
     }
     
     const handleTouchEnd = () => {
       mouseRef.current.isPressed = false
-      setIsInteracting(false)
     }
     
     window.addEventListener('mousemove', handleMouseMove)
@@ -368,7 +306,6 @@ export default function RealisticRiver({
       canvas.width = rect.width * dpr
       canvas.height = rect.height * dpr
       
-      // Ajuster la mise à l'échelle pour le contexte 2D
       const ctx = canvas.getContext('2d')
       if (ctx) {
         ctx.scale(dpr, dpr)
@@ -376,9 +313,10 @@ export default function RealisticRiver({
     }
     
     resizeCanvas()
-    animationRef.current = requestAnimationFrame(animate)
-    
     window.addEventListener('resize', resizeCanvas)
+    
+    // Démarrer l'animation
+    animate()
     
     return () => {
       window.removeEventListener('resize', resizeCanvas)
@@ -386,56 +324,50 @@ export default function RealisticRiver({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [animate, detectPerformance, performanceLevel])
+  }, [detectPerformance, animate, performanceLevel])
 
-  const progress = Math.min(currentInteractions / targetInteractions, 1)
+  // Calculer le progrès
+  const progress = currentInteractions / targetInteractions
 
   return (
-    <div className="relative w-full h-full">
-      {/* Canvas 2D pour la rivière */}
+    <div className="relative w-full h-full overflow-hidden">
+      {/* Canvas principal */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ width: '100%', height: '100%' }}
+        className="w-full h-full block"
+        style={{ 
+          background: 'linear-gradient(180deg, rgba(0, 10, 30, 0.95) 0%, rgba(20, 50, 120, 0.3) 50%, rgba(0, 10, 30, 0.95) 100%)'
+        }}
       />
       
-      {/* Instructions immersives */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: progress < 0.8 ? 1 : 0, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      {/* Interface utilisateur */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div 
-          className="bg-gradient-to-r from-blue-900/60 via-purple-900/60 to-blue-900/60 backdrop-blur-xl rounded-3xl px-8 py-6 text-center border border-blue-400/40 shadow-2xl"
-          animate={{
-            boxShadow: [
-              '0 0 30px rgba(59, 130, 246, 0.3)',
-              '0 0 50px rgba(59, 130, 246, 0.5)',
-              '0 0 30px rgba(59, 130, 246, 0.3)'
-            ]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
+          className="text-center max-w-md mx-auto p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
-          <motion.p 
-            className="text-white font-medium text-xl mb-3"
-            style={{
-              textShadow: '0 0 20px rgba(59, 130, 246, 0.8)'
+          <motion.h2 
+            className="text-2xl font-bold text-white mb-4"
+            animate={{ 
+              textShadow: [
+                '0 0 10px rgba(59, 130, 246, 0.5)',
+                '0 0 20px rgba(59, 130, 246, 0.8)',
+                '0 0 10px rgba(59, 130, 246, 0.5)'
+              ]
             }}
+            transition={{ duration: 2, repeat: Infinity }}
           >
             ✨ Touche la rivière des émotions ✨
-          </motion.p>
+          </motion.h2>
           <motion.p 
             className="text-blue-200 text-sm leading-relaxed"
             animate={{ opacity: [0.7, 1, 0.7] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
             Maintiens enfoncé et laisse ton amour<br/>
-            créer des vagues magiques dans l'eau de notre histoire
+            créer des vagues magiques dans l&apos;eau de notre histoire
           </motion.p>
           
           {/* Indicateur visuel du geste */}
@@ -456,7 +388,7 @@ export default function RealisticRiver({
             </div>
           </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
       
       {/* Barre de progression cinématique */}
       <motion.div
@@ -549,7 +481,7 @@ export default function RealisticRiver({
             transition={{ delay: 1 }}
           >
             <span className="text-blue-300/70 text-xs">
-              {currentInteractions}/{targetInteractions} gestes d'amour créés
+              {currentInteractions}/{targetInteractions} gestes d&apos;amour créés
             </span>
           </motion.div>
         </motion.div>

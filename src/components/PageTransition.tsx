@@ -28,8 +28,8 @@ const pageVariants = {
 }
 
 const pageTransition = {
-  type: 'tween',
-  ease: 'anticipate',
+  type: "tween" as const,
+  ease: "anticipate" as const,
   duration: 0.6,
 }
 
@@ -42,14 +42,14 @@ const overlayVariants = {
     scaleX: 1,
     transition: {
       duration: 0.4,
-      ease: 'easeInOut',
+      ease: "easeInOut" as const,
     },
   },
   exit: {
     scaleX: 0,
     transition: {
       duration: 0.4,
-      ease: 'easeInOut',
+      ease: "easeInOut" as const,
       delay: 0.1,
     },
   },

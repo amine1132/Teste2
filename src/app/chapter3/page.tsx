@@ -363,13 +363,13 @@ export default function Chapter3() {
     const handleTouchStart = (e: TouchEvent) => {
       // Détecter un double tap pour ouvrir l'interface de saisie
       const now = Date.now()
-      if (now - (handleTouchStart as any).lastTap < 300) {
+      if (now - (handleTouchStart as { lastTap?: number }).lastTap! < 300) {
         setIsTyping(true)
         setIsInputVisible(true)
         setUserInput("")
 
       }
-      (handleTouchStart as any).lastTap = now
+      (handleTouchStart as { lastTap?: number }).lastTap = now
     }
     
     window.addEventListener('keydown', handleKeyDown, { passive: true })
@@ -1187,7 +1187,7 @@ export default function Chapter3() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
                     >
-                      ✨ Message d'amour envoyé avec succès !
+                      ✨ Message d&apos;amour envoyé avec succès !
                     </motion.div>
                   )}
                   
@@ -1196,7 +1196,7 @@ export default function Chapter3() {
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ duration: 2.5, repeat: Infinity }}
                   >
-                    🎵 Musique d'amour en cours...
+                    🎵 Musique d&apos;amour en cours...
                   </motion.div>
                 </div>
               )}
@@ -1228,7 +1228,7 @@ export default function Chapter3() {
         <p className="mb-1">• Cliquez partout pour des effets</p>
         <p className="mb-1">• Appuyez sur L pour le message secret</p>
         <p className="mb-1">• Appuyez sur T ou double-tapez pour écrire</p>
-        <p>• Sur iPad Pro: double-tapez l'écran</p>
+        <p>• Sur iPad Pro: double-tapez l&apos;écran</p>
       </motion.div>
 
       {/* Styles CSS personnalisés optimisés */}

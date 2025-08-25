@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { triggerEasterEgg } from '@/utils/easterEggs'
@@ -153,7 +153,7 @@ export default function Chapter2() {
                   textShadow: '0 0 20px rgba(59, 130, 246, 0.6)'
                 }}
               >
-                💕 Nos premiers mots d'amour 💕
+                💕 Nos premiers mots d&apos;amour 💕
               </motion.h3>
               
               <div className="space-y-4">
@@ -183,7 +183,7 @@ export default function Chapter2() {
                       <div className={`mt-2 text-xs opacity-70 ${
                         message.author === 'you' ? 'text-right' : 'text-left'
                       }`}>
-                        {message.author === 'you' ? 'L\'amour de ma vie' : 'Moi'}
+                        {message.author === 'you' ? 'L&apos;amour de ma vie' : 'Moi'}
                       </div>
                     </div>
                   </motion.div>
@@ -245,7 +245,7 @@ export default function Chapter2() {
                 <h4 className="text-white text-2xl font-bold mb-4">✨ Chapitre Complété ✨</h4>
               </motion.div>
               <p className="text-white/80 mb-6">
-                Tu as guidé le flux des rivières de vos premiers mots d'amour...
+                Tu as guidé le flux des rivières de vos premiers mots d&apos;amour...
               </p>
               <p className="text-blue-300 text-sm">
                 Prêt à découvrir la suite de votre histoire ?
