@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💖 Site Amoureux Privé
 
-## Getting Started
+Un site web immersif et romantique créé avec Next.js 15, TailwindCSS, Framer Motion et Three.js pour célébrer une histoire d'amour en quatre chapitres.
 
-First, run the development server:
+## ✨ Fonctionnalités
+
+- **Intro animée** avec nom personnalisé et particules Three.js
+- **4 chapitres interactifs** avec des scènes 3D uniques
+- **Animations fluides** avec Framer Motion
+- **Optimisé iPad Pro** avec interactions tactiles
+- **Easter Eggs cachés** dans chaque chapitre
+- **Design romantique** avec palette rose/violet/doré
+
+## 🚀 Installation
 
 ```bash
+# Cloner le projet
+git clone [url-du-repo]
+cd love-site
+
+# Installer les dépendances
+npm install
+
+# Démarrer en mode développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎨 Personnalisation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Changer le prénom
+Édite `src/app/intro/page.tsx` ligne 17 :
+```typescript
+const loverName = "Charlotte" // ← Remplace par le prénom souhaité
+```
 
-## Learn More
+### Personnaliser les chapitres
+- **Chapitre 1** : Premier Regard (`src/app/chapter1/page.tsx`)
+- **Chapitre 2** : Premiers Mots (`src/app/chapter2/page.tsx`) 
+- **Chapitre 3** : L'Engagement (`src/app/chapter3/page.tsx`)
+- **Chapitre 4** : Notre Éternité (`src/app/chapter4/page.tsx`)
 
-To learn more about Next.js, take a look at the following resources:
+### Couleurs et styles
+Modifie `src/app/globals.css` pour ajuster :
+- Palette de couleurs romantiques
+- Typographie (Playfair Display + Inter)
+- Effets et animations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎮 Easter Eggs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Chaque chapitre contient un Easter Egg caché :
+- **Chapitre 1** : ✨ (coin supérieur droit)
+- **Chapitre 2** : 💌 (coin inférieur gauche)  
+- **Chapitre 3** : 💎 (coin supérieur droit)
+- **Chapitre 4** : 🌟 (coin inférieur droit)
 
-## Deploy on Vercel
+## 📱 Optimisations mobiles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Interface tactile optimisée
+- Support iPad Pro complet
+- Gestes et interactions naturelles
+- Prévention du zoom accidentel
+- Safe areas iOS
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Technologies
+
+- **Next.js 15** - Framework React avec App Router
+- **TailwindCSS v4** - Styles utilitaires
+- **Framer Motion** - Animations fluides
+- **Three.js** - Scènes 3D via @react-three/fiber
+- **TypeScript** - Typage statique
+
+## 📁 Structure
+
+```
+src/
+├── app/
+│   ├── intro/          # Page d'introduction animée
+│   ├── chapter1/       # Premier chapitre
+│   ├── chapter2/       # Deuxième chapitre  
+│   ├── chapter3/       # Troisième chapitre
+│   ├── chapter4/       # Quatrième chapitre
+│   ├── layout.tsx      # Layout global
+│   ├── page.tsx        # Redirection vers intro
+│   └── globals.css     # Styles globaux
+└── utils/
+    └── easterEggs.ts   # Système d'Easter Eggs
+```
+
+## 🎯 Prochaines étapes
+
+- Ajouter des interactions Three.js plus complexes
+- Personnaliser les Easter Eggs avec des effets spéciaux
+- Intégrer de la musique d'ambiance
+- Ajouter des photos/souvenirs
+- Créer des mini-jeux romantiques
+
+## 💝 Notes
+
+Ce site est conçu pour être privé et personnel. Il célèbre une histoire d'amour unique avec des détails intimes et des références personnelles.
+
+---
+
+*Créé avec ❤️ pour célébrer l'amour*

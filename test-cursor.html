@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Curseur PC</title>
+    <style>
+        body {
+            margin: 0;
+            background: #1a1a2e;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: none;
+        }
+        
+        #cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff69b4;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+        
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .pressed {
+            background: rgba(255, 105, 180, 0.3) !important;
+            scale: 1.5 !important;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="cursor"></div>
+    <div id="info">
+        <h3>Test Curseur PC</h3>
+        <p>Status: <span id="status">En attente</span></p>
+        <p>Position: <span id="position">0, 0</span></p>
+        <p>Interactions: <span id="count">0</span></p>
+        <p><strong>Instructions:</strong><br>
+        Clique et maintiens enfoncé puis bouge la souris pour dessiner</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const cursor = document.getElementById('cursor');
+        const statusEl = document.getElementById('status');
+        const positionEl = document.getElementById('position');
+        const countEl = document.getElementById('count');
+        
+        let isPressed = false;
+        let interactionCount = 0;
+        let trails = [];
+        
+        // Redimensionner le canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Gestion de la souris
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Mettre à jour le curseur
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+            positionEl.textContent = `${x}, ${y}`;
+            
+            if (isPressed) {
+                // Ajouter un point de trail
+                trails.push({ x, y, timestamp: Date.now() });
+                interactionCount++;
+                countEl.textContent = interactionCount;
+                
+                // Dessiner sur le canvas
+                ctx.globalAlpha = 0.7;
+                ctx.fillStyle = '#ff69b4';
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                console.log('Drawing at:', x, y);
+            }
+        });
+        
+        document.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isPressed = true;
+            cursor.classList.add('pressed');
+            statusEl.textContent = 'Dessin en cours...';
+            console.log('Mouse down - starting to draw');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isPressed = false;
+            cursor.classList.remove('pressed');
+            statusEl.textContent = 'En attente';
+            console.log('Mouse up - stopped drawing');
+        });
+        
+        // Nettoyage des trails
+        setInterval(() => {
+            const now = Date.now();
+            trails = trails.filter(trail => now - trail.timestamp < 2000);
+        }, 100);
+        
+        console.log('Test curseur PC initialisé - clique et fais glisser pour tester');
+    </script>
+</body>
+</html>
+
